@@ -17,8 +17,10 @@
 
 create extension if not exists pgcrypto with schema extensions;
 
+-- NOTE: in this project "private" is SHARED with another system whose RLS
+-- policies call private.* functions as anon/authenticated. Never revoke
+-- schema-wide privileges here; only lock down the objects this file creates.
 create schema if not exists private;
-revoke all on schema private from public, anon, authenticated;
 
 -- ---------------------------------------------------------------------
 -- Tables
@@ -346,7 +348,12 @@ end $$;
 -- ---------------------------------------------------------------------
 -- Function permissions: only enviar_ficha is callable, and only by anon
 -- ---------------------------------------------------------------------
-revoke execute on all functions in schema private from public, anon, authenticated;
+-- Only this file's helpers; other functions in "private" belong to another system.
+revoke execute on function private.txt(jsonb, text, int, boolean, boolean, int) from public, anon, authenticated;
+revoke execute on function private.opt(jsonb, text, text[], boolean) from public, anon, authenticated;
+revoke execute on function private.multi(jsonb, text, text[]) from public, anon, authenticated;
+revoke execute on function private.tel(jsonb, text, boolean) from public, anon, authenticated;
+revoke execute on function private.dt(jsonb, text, boolean) from public, anon, authenticated;
 revoke execute on function public.enviar_ficha(jsonb) from public, anon, authenticated;
 grant execute on function public.enviar_ficha(jsonb) to anon;
 
