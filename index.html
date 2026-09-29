@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f7a6d">
+<meta name="format-detection" content="telephone=no">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://mzswldshtnyvietsicws.supabase.co; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Ficha do Pet · Pet Sitter Veterinário</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Nunito:wght@400;600;700&display=swap">
+<style>
+:root{--bg:#f4f1ea;--card:#fff;--ink:#1f2d2b;--mut:#6b7a77;--pri:#1f7a6d;--pri2:#e9f4f1;--acc:#ee7b5f;--line:#e3ded3;--err:#c0392b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14201e;--card:#1c2b29;--ink:#eef3f1;--mut:#9fb0ac;--pri:#4fc3af;--pri2:#23403b;--acc:#ff9478;--line:#2c403c;--err:#ff7b6b}}
+:root[data-theme="dark"]{--bg:#14201e;--card:#1c2b29;--ink:#eef3f1;--mut:#9fb0ac;--pri:#4fc3af;--pri2:#23403b;--acc:#ff9478;--line:#2c403c;--err:#ff7b6b}
+*,*:before,*:after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Nunito,system-ui,sans-serif;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+.wrap{max-width:720px;margin:0 auto;padding:max(16px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+/* Logo has a white background, so the banner stays white in dark mode too */
+.hero{background:#fff;color:#1d4a50;border-radius:24px;padding:14px 22px;display:flex;align-items:center;gap:18px;box-shadow:0 6px 24px rgba(20,40,36,.08)}
+.hero img{display:block;flex:none;width:42%;max-width:220px;height:auto}
+.hero .tx{flex:1;min-width:0;border-left:1px solid #efe6df;padding-left:18px}
+.hero h1{font:700 21px/1.2 Fraunces,Georgia,serif;margin:0 0 4px}
+.hero p{margin:0;color:#6b7a77;font-size:14px}
+.prog{display:flex;gap:6px;margin:18px 0 6px}
+.prog i{flex:1;height:6px;border-radius:9px;background:var(--line);transition:.3s}
+.prog i.on{background:var(--pri)}.prog i.cur{background:var(--acc)}
+.lbl{color:var(--mut);font-size:13px;font-weight:600;margin-bottom:10px}
+.card{background:var(--card);border-radius:22px;padding:24px;box-shadow:0 6px 24px rgba(20,40,36,.08);animation:in .35s}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+.card h2{font:700 24px Fraunces,Georgia,serif;margin:0 0 4px}
+.card .sub{color:var(--mut);margin:0 0 20px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.f{grid-column:span 2;min-width:0}.f.h{grid-column:span 1}
+label.t{display:block;font-weight:700;font-size:15px;margin-bottom:8px}
+label.t b{color:var(--acc)}
+/* 16px minimum on fields stops iOS from zooming in on focus */
+input,select,textarea{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:2px solid transparent;border-radius:14px;padding:13px 14px;min-height:50px;outline:0;transition:.2s;-webkit-appearance:none;appearance:none}
+input[type=date]{display:block;min-width:0}
+input::-webkit-date-and-time-value{text-align:left}
+input:focus,select:focus,textarea:focus{border-color:var(--pri);background:var(--card)}
+input::placeholder,textarea::placeholder{color:var(--mut);opacity:.8}
+textarea{min-height:96px;resize:vertical}
+.bad input,.bad select,.bad textarea{border-color:var(--err)}
+.msg{color:var(--err);font-size:13px;margin-top:6px;display:none}.bad .msg{display:block}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{cursor:pointer;display:inline-flex;align-items:center;min-height:44px;padding:9px 18px;border-radius:99px;border:2px solid var(--line);font-weight:600;font-size:15px;user-select:none;-webkit-user-select:none;transition:.15s;background:var(--card);touch-action:manipulation}
+@media (hover:hover){.opt:hover{border-color:var(--pri)}}
+.opt:active{transform:scale(.97)}
+.opt.sel{background:var(--pri);border-color:var(--pri);color:#fff}
+.bad .opts{outline:2px solid var(--err);outline-offset:4px;border-radius:14px}
+.note{background:var(--pri2);border-left:4px solid var(--pri);border-radius:12px;padding:12px 14px;font-size:15px}
+.chk{display:flex;gap:12px;align-items:flex-start;font-weight:700;font-size:15px;cursor:pointer}
+.chk input{width:24px;height:24px;min-height:0;flex:none;margin:1px 0 0;padding:0;accent-color:var(--pri);-webkit-appearance:checkbox;appearance:auto}
+.sig{border:2px dashed var(--line);border-radius:14px;background:var(--bg);touch-action:none;width:100%;height:170px;display:block}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:24px}
+button{font:inherit;font-weight:700;border:0;border-radius:14px;padding:14px 22px;min-height:50px;cursor:pointer;transition:.15s;touch-action:manipulation}
+.p{background:var(--pri);color:#fff}@media (hover:hover){.p:hover{filter:brightness(1.08)}}
+button:active{transform:scale(.98)}
+.g{background:transparent;color:var(--mut)}
+.w{background:#25d366;color:#063}.o{background:var(--pri2);color:var(--pri)}
+.sum h3{font:700 16px Fraunces,serif;color:var(--pri);margin:18px 0 6px}
+.sum div{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:8px 0;font-size:15px}
+.sum span{color:var(--mut)}.sum b{text-align:right;max-width:60%;overflow-wrap:anywhere}
+.foot{text-align:center;color:var(--mut);font-size:13px;margin:18px 0 8px}
+.saved{color:var(--mut);font-size:12px;text-align:center;margin-top:10px}
+.saved a{color:var(--pri);font-weight:700}
+.hp{position:absolute!important;left:-10000px;top:auto;width:1px;height:1px;min-height:0;opacity:0;pointer-events:none}
+@media (max-width:560px){
+ .wrap{padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right))}
+ .hero{padding:10px 14px;gap:12px;border-radius:20px}
+ .hero img{width:46%}
+ .hero .tx{padding-left:12px}
+ .hero h1{font-size:16px}.hero p{font-size:12.5px;line-height:1.4}
+ .card{padding:20px 16px 0;border-radius:20px}
+ .card h2{font-size:22px}
+ .f.h{grid-column:span 2}
+ /* buttons stay reachable at the thumb: sticky bar at the bottom of the card */
+ .nav{position:sticky;bottom:0;z-index:2;margin:22px -16px 0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:var(--card);border-top:1px solid var(--line);border-radius:0 0 20px 20px}
+ .nav .p{flex:1}
+ .nav.end{position:static;flex-direction:column;border-top:0}.nav.end button{width:100%}
+ .saved{margin-top:18px}
+}
+</style></head><body><div class="wrap">
+<div class="hero"><img src="logo.jpg" width="822" height="662" fetchpriority="high" alt="Dra. Caroline Almeida e Dra. Luísa Moraes · Médicas Veterinárias"><div class="tx"><h1>Ficha de cuidados do seu pet</h1><p>Leva cerca de 5 minutos. Quanto mais detalhes, mais tranquilo e seguro será o cuidado.</p></div></div>
+<div class="prog" id="prog"></div><div class="lbl" id="lbl"></div>
+<div class="card" id="card"></div>
+<div class="foot">Suas informações são usadas apenas para o cuidado do seu pet.</div>
+<!-- bot trap: invisible to people, bots fill it; the server then discards the submission -->
+<input class="hp" data-k="site" tabindex="-1" autocomplete="off" aria-hidden="true">
+</div>
+<script>
+// WhatsApp da veterinária com DDI e DDD, só números (ex.: "5511912345678").
+// Vazio = o WhatsApp abre para a pessoa escolher o contato.
+const WA="5577999294647";
+// Supabase: only the PUBLISHABLE key belongs here (it is public by design).
+// Never put the service_role / secret key or the database password in this file.
+// Access control lives in the database: supabase/01_ficha_pet_seguranca.sql
+const SB_URL="https://mzswldshtnyvietsicws.supabase.co";
+const SB_KEY="sb_publishable_NIv2SwMPqEpGUsgRIRMS4w_ETiR_-Cw";
+const Y=["Sim","Não"],YN=["Sim","Não","Não sei"];
+// Field: [key, label, type, required, width("h"=half), options, showIf[key,value], "multi"]
+const STEPS=[
+{i:"👤",t:"Dados do tutor",s:"Quem é o responsável pelo pet?",f:[
+["nome","Nome completo","text",1],["tel","Telefone principal (WhatsApp)","tel",1,"h"],["tel2","Telefone de emergência","tel",1,"h"],
+["end","Endereço completo","text",1],["fam","Contato de familiar ou amigo (nome e telefone)","text",0]]},
+{i:"🐶",t:"Dados do pet",s:"Conte quem vamos cuidar.",f:[
+["pet","Nome do pet","text",1,"h"],["esp","Espécie","opt",1,"h",["Cão","Gato","Ave","Roedor","Outro"]],
+["raca","Raça","text",0,"h"],["idade","Idade","text",0,"h"],["sexo","Sexo","opt",1,"h",["Macho","Fêmea"]],
+["cast","Castrado(a)?","opt",1,"h",Y],["peso","Peso aproximado (kg)","text",0]]},
+{i:"🩺",t:"Saúde",s:"Informações essenciais para segurança do pet.",f:[
+["vac","Vacinas em dia?","opt",1,"",YN],["doe","Possui alguma doença?","opt",1,"",Y],
+["doeq","Qual doença?","area",0,"",0,["doe","Sim"]],
+["med","Faz uso de medicamentos?","opt",1,"",Y],["medq","Nome, dose e horários","area",0,"",0,["med","Sim"]],
+["ale","Possui alergias? Quais?","text",0],
+["autvet","Autoriza atendimento veterinário em emergência?","opt",1,"",["Sim","Não"]]]},
+{i:"🍽️",t:"Alimentação",s:"Para manter a rotina alimentar de sempre.",f:[
+["ali","Tipo de alimentação","opt",1,"",["Ração seca","Ração úmida","Natural","Mista"]],
+["qtd","Quantidade por refeição","text",0,"h"],["hor","Horários das refeições","text",0,"h"],
+["proib","Alimentos proibidos","text",0]]},
+{i:"🎾",t:"Comportamento",s:"Ajuda a evitar sustos e criar conexão.",f:[
+["pess","É sociável com pessoas?","opt",1,"",["Sim","Mais ou menos","Não"]],
+["anim","É sociável com outros animais?","opt",1,"",["Sim","Mais ou menos","Não"]],
+["medo","Tem medo de algo?","opt",0,"",["Fogos","Trovões","Pessoas estranhas","Barulhos","Nada","Outros"],0,"multi"],
+["medoq","Do que ele tem medo?","text",0,"",0,["medo","Outros"]],
+["foge","Costuma fugir?","opt",1,"h",Y],["agr","Apresenta agressividade?","opt",1,"h",Y],
+["hab","Hábitos importantes","area",0,"",0]]},
+{i:"📅",t:"Rotina do serviço",s:"O que vamos combinar?",f:[
+["ini","Data de início","date",1,"h"],["fim","Data de término","date",1,"h"],
+["hora","Horários desejados","text",0],
+["serv","Serviços inclusos","opt",0,"",["Alimentação","Troca de água","Limpeza","Passeio","Medicação","Enriquecimento ambiental","Fotos e vídeos"],0,"multi"]]},
+{i:"🏠",t:"Casa e acesso",s:"Como entramos e o que precisamos saber.",f:[
+["acesso","Como será o acesso ao imóvel?","opt",1,"",["Chave comigo","Portaria","Alguém entrega","Outro"]],
+["inst","Instruções sobre portões, alarmes ou chaves","area",0,"",0]]},
+{i:"✍️",t:"Termo de autorização",s:"Última etapa!",f:[["term","","term"]]}];
+const LAST=STEPS.length-1;
+// Mobile keyboard/autofill hints per field
+const AC={nome:"name",tel:"tel",tel2:"tel",end:"street-address"};
+const IM={peso:"decimal",idade:"text"};
+const PH={tel:"(77) 91234-5678",tel2:"(77) 91234-5678",peso:"Ex.: 8,5",idade:"Ex.: 3 anos",medoq:"Ex.: aspirador, secador, motos",
+ qtd:"Ex.: 1 xícara",hor:"Ex.: 8h e 19h",hora:"Ex.: manhã e noite"};
+const EXCL={medo:"Nada"}; // selecting this option clears the others (and vice versa)
+// Same limits the server enforces (enviar_ficha); keep both in sync
+const ML={nome:120,tel:20,tel2:20,end:200,fam:160,pet:60,raca:60,idade:30,peso:10,doeq:500,medq:500,ale:200,
+ qtd:80,hor:80,proib:200,medoq:120,hab:800,hora:80,inst:600};
+const today=(n=0)=>{const d=new Date();d.setDate(d.getDate()+n);d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)};
+const telOK=v=>/^[0-9()+ .-]+$/.test(v)&&(n=>n>=10&&n<=13)(v.replace(/\D/g,"").length);
+// Format checks shown under the field; return true or the error message
+const CHK={
+ nome:v=>v.trim().length>=3||"Digite o nome completo",
+ tel:v=>telOK(v)||"Telefone com DDD, ex.: (77) 91234-5678",
+ tel2:v=>telOK(v)||"Telefone com DDD, ex.: (77) 91234-5678",
+ end:v=>v.trim().length>=5||"Digite o endereço completo",
+ ini:v=>(v>=today(-7)&&v<=today(730))||"Confira a data de início",
+ fim:v=>(!S.ini||v>=S.ini)||"O término deve ser igual ou depois do início"};
+const KEY="fichaPet_v1";
+let S={},cur=0,sigOK=false;
+try{const d=JSON.parse(localStorage.getItem(KEY)||"null");if(d&&d.S){S=d.S;cur=Math.min(Math.max(d.cur|0,0),LAST+1)}}catch(e){}
+sigOK=!!S.sigimg;
+S._t0=S._t0||Date.now(); // fill-time for the server's anti-bot check
+function save(){try{localStorage.setItem(KEY,JSON.stringify({S,cur}))}catch(e){}}
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const vis=f=>{if(!f[6])return true;const v=S[f[6][0]];return Array.isArray(v)?v.includes(f[6][1]):v===f[6][1]};
+function fld(f){
+ const [k,l,t,r,w,o,,x]=f;if(!vis(f))return"";
+ const c=`f ${w||""}`,lab=`<label class="t" for="i_${k}">${l}${r?" <b>*</b>":""}</label>`;
+ const attrs=`id="i_${k}" data-k="${k}"${AC[k]?` autocomplete="${AC[k]}"`:""}${IM[k]?` inputmode="${IM[k]}"`:""}${PH[k]?` placeholder="${PH[k]}"`:""}${ML[k]?` maxlength="${ML[k]}"`:""}`;
+ let inp;
+ if(t=="opt"){const m=x=="multi",v=S[k];
+  inp=`<div class="opts" role="group" aria-label="${esc(l)}">${o.map(z=>{const on=m?(v||[]).includes(z):v===z;return `<span class="opt${on?" sel":""}" role="${m?"checkbox":"radio"}" aria-checked="${on}" tabindex="0" data-k="${k}" data-v="${z}" data-m="${m?1:0}">${z}</span>`}).join("")}</div>`}
+ else if(t=="area")inp=`<textarea ${attrs}>${esc(S[k]||"")}</textarea>`;
+ else inp=`<input type="${t}" ${attrs} enterkeyhint="next" value="${esc(S[k]||"")}">`;
+ return `<div class="${c}" id="f_${k}">${lab}${inp}<div class="msg">Campo obrigatório</div></div>`}
+function term(){return `<div class="f note"><b>Autorização de decisões imediatas.</b> Em caso de urgência, se não conseguirmos contato com você ou com o contato de emergência, autoriza que a médica-veterinária tome decisões imediatas e leve o pet ao atendimento?</div>
+<div class="f" id="f_aut"><div class="opts"><span class="opt${S.aut=="Autorizo"?" sel":""}" role="radio" tabindex="0" data-k="aut" data-v="Autorizo" data-m="0">Autorizo</span><span class="opt${S.aut=="Não autorizo"?" sel":""}" role="radio" tabindex="0" data-k="aut" data-v="Não autorizo" data-m="0">Não autorizo</span></div><div class="msg">Escolha uma opção</div></div>
+<div class="f" id="f_desp"><label class="chk"><input type="checkbox" id="desp" ${S.desp?"checked":""}><span>Declaro que sou responsável pelas despesas veterinárias decorrentes do atendimento. <b style="color:var(--acc)">*</b></span></label><div class="msg">Necessário aceitar</div></div>
+<div class="f h"><label class="t" for="i_data">Data</label><input type="date" id="i_data" data-k="data" value="${esc(S.data||today())}"></div>
+<div class="f" id="f_sig"><label class="t">Assinatura do tutor <b>*</b> <span class="opt" id="clr" style="min-height:0;padding:2px 12px;font-size:13px">limpar</span></label><canvas class="sig" id="sig" aria-label="Área para assinar com o dedo"></canvas><div class="msg">Assine acima com o dedo</div></div>`}
+function render(){
+ $("prog").innerHTML=STEPS.map((_,i)=>`<i class="${i<cur?"on":i==cur?"cur":""}"></i>`).join("")+`<i class="${cur>LAST?"on":""}"></i>`;
+ if(cur>LAST)return review();
+ const st=STEPS[cur];$("lbl").textContent=`Etapa ${cur+1} de ${STEPS.length}`;
+ $("card").innerHTML=`<h2>${st.i} ${st.t}</h2><p class="sub">${st.s}</p><div class="grid">${st.f.map(f=>f[2]=="term"?term():fld(f)).join("")}</div>
+ <div class="saved">Suas respostas ficam salvas neste aparelho até você enviar.</div>
+ <div class="nav"><button class="g" id="bk" ${cur?"":"style='visibility:hidden'"}>← Voltar</button><button class="p" id="nx">${cur==LAST?"Revisar ficha →":"Continuar →"}</button></div>`;
+ $("bk").onclick=()=>{cur--;save();render();toTop()};$("nx").onclick=next;
+ if(cur==LAST)initSig();
+}
+function toTop(){scrollTo({top:0,behavior:"smooth"})}
+document.addEventListener("input",e=>{const k=e.target.dataset.k;if(k){S[k]=e.target.value;const p=e.target.closest(".f");if(p)p.classList.remove("bad")}
+ if(e.target.id=="desp"){S.desp=e.target.checked;$("f_desp").classList.remove("bad")}save()});
+document.addEventListener("change",e=>{if(e.target.id=="desp"){S.desp=e.target.checked;save()}});
+// "Next" on the phone keyboard moves to the next field instead of submitting
+document.addEventListener("keydown",e=>{
+ if(e.key=="Enter"&&e.target.tagName=="INPUT"&&e.target.type!="checkbox"){e.preventDefault();
+  const all=[...$("card").querySelectorAll("input:not([type=checkbox]),textarea")],i=all.indexOf(e.target);
+  if(all[i+1])all[i+1].focus();else{e.target.blur();next()}}
+ if((e.key=="Enter"||e.key==" ")&&e.target.classList.contains("opt")){e.preventDefault();e.target.click()}});
+document.addEventListener("click",e=>{const o=e.target.closest(".opt");if(!o||!o.dataset.k)return;
+ const k=o.dataset.k,v=o.dataset.v,cond=STEPS[cur]&&STEPS[cur].f.some(f=>f[6]&&f[6][0]==k);
+ if(o.dataset.m==1){let a=(S[k]||[]).slice();
+  a=a.includes(v)?a.filter(z=>z!=v):[...a,v];
+  if(EXCL[k]&&a.includes(v)){a=v==EXCL[k]?[v]:a.filter(z=>z!=EXCL[k])}
+  S[k]=a;save();
+  if(cond){render();const n=$("i_"+k+"q");if(n&&a.includes("Outros")&&v=="Outros")n.focus();return}
+  o.parentNode.querySelectorAll(".opt").forEach(z=>{const on=a.includes(z.dataset.v);z.classList.toggle("sel",on);z.setAttribute("aria-checked",on)})}
+ else{S[k]=v;save();if(cond)return render();
+  o.parentNode.querySelectorAll(".opt").forEach(z=>{z.classList.toggle("sel",z==o);z.setAttribute("aria-checked",z==o)})}
+ const p=o.closest(".f");if(p)p.classList.remove("bad")});
+function next(){
+ let ok=true;
+ (STEPS[cur].f).forEach(f=>{if(f[2]=="term")return;const el=$("f_"+f[0]);if(!el||!vis(f))return;
+  const v=S[f[0]],empty=!v||(Array.isArray(v)&&!v.length)||(""+v).trim()==="";
+  let msg=empty&&f[3]?"Campo obrigatório":"";
+  if(!empty&&CHK[f[0]]){const r=CHK[f[0]](""+v);if(r!==true)msg=r}
+  el.querySelector(".msg").textContent=msg;el.classList.toggle("bad",!!msg);if(msg)ok=false});
+ if(cur==LAST){[["aut",S.aut],["desp",S.desp],["sig",sigOK]].forEach(([k,v])=>{$("f_"+k).classList.toggle("bad",!v);if(!v)ok=false})}
+ if(!ok){const b=document.querySelector(".bad");b&&b.scrollIntoView({behavior:"smooth",block:"center"});return}
+ cur++;save();render();toTop()}
+let sigW=0;
+function initSig(){const c=$("sig");if(!c)return;const r=c.getBoundingClientRect(),d=devicePixelRatio||1;sigW=r.width;c.width=r.width*d;c.height=r.height*d;
+ const x=c.getContext("2d");x.scale(d,d);x.lineWidth=2.4;x.lineCap="round";x.lineJoin="round";x.strokeStyle=getComputedStyle(document.body).color;
+ if(S.sigimg){const im=new Image();im.onload=()=>x.drawImage(im,0,0,r.width,r.height);im.src=S.sigimg}
+ let dr=false;const pt=e=>{const b=c.getBoundingClientRect();return[e.clientX-b.left,e.clientY-b.top]};
+ const end=()=>{if(!dr)return;dr=false;S.sigimg=c.toDataURL();S.sigsm=sigSmall(c);save()};
+ c.onpointerdown=e=>{e.preventDefault();dr=true;x.beginPath();x.moveTo(...pt(e));c.setPointerCapture(e.pointerId)};
+ c.onpointermove=e=>{if(!dr)return;x.lineTo(...pt(e));x.stroke();sigOK=true;$("f_sig").classList.remove("bad")};
+ c.onpointerup=end;c.onpointercancel=end;
+ $("clr").onclick=()=>{x.clearRect(0,0,c.width,c.height);sigOK=false;S.sigimg="";S.sigsm="";save()}}
+// Copy sent to the server: 500px wide, black ink on white (readable even if signed in dark mode), a few KB
+function sigSmall(c){const w=500,h=Math.round(c.height*w/c.width),o=document.createElement("canvas");o.width=w;o.height=h;
+ const g=o.getContext("2d");g.drawImage(c,0,0,w,h);g.globalCompositeOperation="source-in";g.fillStyle="#000";g.fillRect(0,0,w,h);
+ g.globalCompositeOperation="destination-over";g.fillStyle="#fff";g.fillRect(0,0,w,h);return o.toDataURL("image/png")}
+// Rotating the phone resizes the canvas; redraw the saved signature at the new size
+addEventListener("resize",()=>{const c=$("sig");if(c&&Math.abs(c.getBoundingClientRect().width-sigW)>1)initSig()});
+function rows(){return STEPS.map(st=>({t:st.i+" "+st.t,r:st.f.filter(f=>f[2]!="term"&&vis(f)).map(f=>[f[1],[].concat(S[f[0]]||"—").join(", ")||"—"])}))
+ .concat([{t:"✍️ Termo",r:[["Decisões imediatas em emergência",S.aut],["Responsável por despesas veterinárias","Sim"],["Data",S.data||today()],["Assinatura","Assinado digitalmente"]]}])}
+function text(){return "🐾 *FICHA DO PET*\n\n"+rows().map(s=>"*"+s.t+"*\n"+s.r.map(r=>"• "+r[0]+": "+r[1]).join("\n")).join("\n\n")}
+function copy(t){if(navigator.clipboard&&isSecureContext)return navigator.clipboard.writeText(t);
+ return new Promise((ok,no)=>{const a=document.createElement("textarea");a.value=t;a.setAttribute("readonly","");a.style.cssText="position:fixed;top:0;opacity:0";
+  document.body.appendChild(a);a.select();a.setSelectionRange(0,t.length);const r=document.execCommand("copy");a.remove();r?ok():no()})}
+function review(){$("lbl").textContent="Revisão final";
+ $("card").innerHTML=`<h2>✅ Tudo certo?</h2><p class="sub">Confira as informações e envie para a veterinária.</p><div class="sum">${rows().map(s=>`<h3>${s.t}</h3>${s.r.map(r=>`<div><span>${esc(r[0])}</span><b>${esc(r[1]||"—")}</b></div>`).join("")}`).join("")}</div>
+ <div class="nav end"><button class="w" id="wa">Enviar ficha</button><button class="o" id="cp">Copiar respostas</button><button class="g" id="bk">← Editar</button></div>
+ <div class="saved" id="st" role="status" aria-live="polite">Ao enviar, a ficha é salva com segurança e o WhatsApp abre para avisar a veterinária.</div>`;
+ $("bk").onclick=()=>{cur=LAST;save();render();toTop()};
+ $("wa").onclick=enviar;
+ $("cp").onclick=()=>copy(text()).then(()=>$("cp").textContent="Copiado ✓",()=>$("cp").textContent="Não deu para copiar, use o WhatsApp")}
+// Only visible fields, plus the term; the server re-validates everything
+function payload(){const p={};
+ STEPS.forEach(st=>st.f.forEach(f=>{const v=S[f[0]];if(f[2]!="term"&&vis(f)&&v!=null&&v!=="")p[f[0]]=v}));
+ return Object.assign(p,{aut:S.aut,desp:!!S.desp,data:S.data||today(),sig:S.sigsm||S.sigimg,site:S.site||"",_ms:Date.now()-S._t0})}
+const LABEL=Object.fromEntries(STEPS.flatMap(s=>s.f).map(f=>[f[0],f[1]]).concat([["aut","Autorização"],["desp","Responsável pelas despesas"],["sig","Assinatura"],["data","Data"]]));
+function goWA(){location.href="https://wa.me/"+WA+"?text="+encodeURIComponent(text())}
+async function enviar(){const b=$("wa"),st=$("st");b.disabled=true;b.textContent="Enviando…";
+ let why="ok",campo="";
+ try{const r=await fetch(SB_URL+"/rest/v1/rpc/enviar_ficha",{method:"POST",
+   headers:{"apikey":SB_KEY,"Content-Type":"application/json"},body:JSON.stringify({payload:payload()})});
+  if(!r.ok){const j=await r.json().catch(()=>({}));[why,campo]=String(j.message||"erro:").split(":");if(r.status>=500)why="servidor"}}
+ catch(e){why="rede"}
+ if(why=="ok"){try{localStorage.removeItem(KEY)}catch(e){} // don't leave personal data on the phone
+  st.textContent="Ficha salva ✓ Abrindo o WhatsApp…";setTimeout(goWA,600);return}
+ if(["obrigatorio","tamanho","formato","invalido","intervalo"].includes(why)&&campo!="payload"){
+  b.disabled=false;b.textContent="Enviar ficha";
+  st.innerHTML=`Confira o campo <b>${esc(LABEL[campo]||campo)}</b> (toque em “Editar”) e envie de novo. <a href="#" id="wa2">Enviar só pelo WhatsApp</a>`;
+  $("wa2").onclick=e=>{e.preventDefault();goWA()};return}
+ // network/limit/server problem: the vet still receives the form via WhatsApp
+ st.textContent=why=="limite"?"Muitos envios em pouco tempo. Abrindo o WhatsApp…":"Não conseguimos salvar online agora. Abrindo o WhatsApp…";
+ setTimeout(goWA,1500)}
+render();
+</script></body></html>

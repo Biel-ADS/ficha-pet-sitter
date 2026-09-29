@@ -1,0 +1,11 @@
+# secrets: never commit
+.env
+.env.*
+*.key
+supabase/.temp/
+
+# OS / editor junk
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
