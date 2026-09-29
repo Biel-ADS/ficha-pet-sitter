@@ -7,7 +7,7 @@
 <meta name="referrer" content="no-referrer">
 <title>Ficha do Pet · Pet Sitter Veterinário</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Nunito:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Nunito:wght@400;600;700&display=swap" media="print" onload="this.media='all'">
 <style>
 :root{--bg:#f4f1ea;--card:#fff;--ink:#1f2d2b;--mut:#6b7a77;--pri:#1f7a6d;--pri2:#e9f4f1;--acc:#ee7b5f;--line:#e3ded3;--err:#c0392b}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14201e;--card:#1c2b29;--ink:#eef3f1;--mut:#9fb0ac;--pri:#4fc3af;--pri2:#23403b;--acc:#ff9478;--line:#2c403c;--err:#ff7b6b}}
@@ -82,7 +82,7 @@ button:active{transform:scale(.98)}
  .saved{margin-top:18px}
 }
 </style></head><body><div class="wrap">
-<div class="hero"><img src="logo.jpg" width="822" height="662" fetchpriority="high" alt="Dra. Caroline Almeida e Dra. Luísa Moraes · Médicas Veterinárias"><div class="tx"><h1>Ficha de cuidados do seu pet</h1><p>Leva cerca de 5 minutos. Quanto mais detalhes, mais tranquilo e seguro será o cuidado.</p></div></div>
+<div class="hero"><img src="logo.jpg" width="440" height="354" fetchpriority="high" decoding="async" alt="Dra. Caroline Almeida e Dra. Luísa Moraes · Médicas Veterinárias"><div class="tx"><h1>Ficha de cuidados do seu pet</h1><p>Leva cerca de 5 minutos. Quanto mais detalhes, mais tranquilo e seguro será o cuidado.</p></div></div>
 <div class="prog" id="prog"></div><div class="lbl" id="lbl"></div>
 <div class="card" id="card"></div>
 <div class="foot">Suas informações são usadas apenas para o cuidado do seu pet.</div>
@@ -106,6 +106,7 @@ const STEPS=[
 ["end","Endereço completo","text",1],["fam","Contato de familiar ou amigo (nome e telefone)","text",0]]},
 {i:"🐶",t:"Dados do pet",s:"Conte quem vamos cuidar.",f:[
 ["pet","Nome do pet","text",1,"h"],["esp","Espécie","opt",1,"h",["Cão","Gato","Ave","Roedor","Outro"]],
+["espq","Qual espécie?","text",0,"",0,["esp","Outro"]],
 ["raca","Raça","text",0,"h"],["idade","Idade","text",0,"h"],["sexo","Sexo","opt",1,"h",["Macho","Fêmea"]],
 ["cast","Castrado(a)?","opt",1,"h",Y],["peso","Peso aproximado (kg)","text",0]]},
 {i:"🩺",t:"Saúde",s:"Informações essenciais para segurança do pet.",f:[
@@ -131,18 +132,19 @@ const STEPS=[
 ["serv","Serviços inclusos","opt",0,"",["Alimentação","Troca de água","Limpeza","Passeio","Medicação","Enriquecimento ambiental","Fotos e vídeos"],0,"multi"]]},
 {i:"🏠",t:"Casa e acesso",s:"Como entramos e o que precisamos saber.",f:[
 ["acesso","Como será o acesso ao imóvel?","opt",1,"",["Chave comigo","Portaria","Alguém entrega","Outro"]],
+["acessoq","Qual forma de acesso?","text",0,"",0,["acesso","Outro"]],
 ["inst","Instruções sobre portões, alarmes ou chaves","area",0,"",0]]},
 {i:"✍️",t:"Termo de autorização",s:"Última etapa!",f:[["term","","term"]]}];
 const LAST=STEPS.length-1;
 // Mobile keyboard/autofill hints per field
 const AC={nome:"name",tel:"tel",tel2:"tel",end:"street-address"};
 const IM={peso:"decimal",idade:"text"};
-const PH={tel:"(77) 91234-5678",tel2:"(77) 91234-5678",peso:"Ex.: 8,5",idade:"Ex.: 3 anos",medoq:"Ex.: aspirador, secador, motos",
+const PH={tel:"(77) 91234-5678",tel2:"(77) 91234-5678",peso:"Ex.: 8,5",idade:"Ex.: 3 anos",medoq:"Ex.: aspirador, secador, motos",espq:"Ex.: coelho, tartaruga",acessoq:"Descreva como será",
  qtd:"Ex.: 1 xícara",hor:"Ex.: 8h e 19h",hora:"Ex.: manhã e noite"};
 const EXCL={medo:"Nada"}; // selecting this option clears the others (and vice versa)
 // Same limits the server enforces (enviar_ficha); keep both in sync
 const ML={nome:120,tel:20,tel2:20,end:200,fam:160,pet:60,raca:60,idade:30,peso:10,doeq:500,medq:500,ale:200,
- qtd:80,hor:80,proib:200,medoq:120,hab:800,hora:80,inst:600};
+ qtd:80,hor:80,proib:200,medoq:120,espq:60,acessoq:120,hab:800,hora:80,inst:600};
 const today=(n=0)=>{const d=new Date();d.setDate(d.getDate()+n);d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)};
 const telOK=v=>/^[0-9()+ .-]+$/.test(v)&&(n=>n>=10&&n<=13)(v.replace(/\D/g,"").length);
 // Format checks shown under the field; return true or the error message
@@ -203,11 +205,13 @@ document.addEventListener("click",e=>{const o=e.target.closest(".opt");if(!o||!o
   a=a.includes(v)?a.filter(z=>z!=v):[...a,v];
   if(EXCL[k]&&a.includes(v)){a=v==EXCL[k]?[v]:a.filter(z=>z!=EXCL[k])}
   S[k]=a;save();
-  if(cond){render();const n=$("i_"+k+"q");if(n&&a.includes("Outros")&&v=="Outros")n.focus();return}
+  if(cond){render();if(a.includes(v))focusQ(k,v);return}
   o.parentNode.querySelectorAll(".opt").forEach(z=>{const on=a.includes(z.dataset.v);z.classList.toggle("sel",on);z.setAttribute("aria-checked",on)})}
- else{S[k]=v;save();if(cond)return render();
+ else{S[k]=v;save();if(cond){render();return focusQ(k,v)}
   o.parentNode.querySelectorAll(".opt").forEach(z=>{z.classList.toggle("sel",z==o);z.setAttribute("aria-checked",z==o)})}
  const p=o.closest(".f");if(p)p.classList.remove("bad")});
+// Show and focus the "which one?" box that appears after picking Outro/Outros
+function focusQ(k,v){const n=$("i_"+k+"q");if(n&&/^Outros?$/.test(v)){n.scrollIntoView({block:"center"});n.focus({preventScroll:true})}}
 function next(){
  let ok=true;
  (STEPS[cur].f).forEach(f=>{if(f[2]=="term")return;const el=$("f_"+f[0]);if(!el||!vis(f))return;
