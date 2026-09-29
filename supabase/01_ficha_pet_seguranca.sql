@@ -252,7 +252,7 @@ begin
 
   v_ini := private.dt(payload, 'ini', true);
   v_fim := private.dt(payload, 'fim', true);
-  if v_ini < current_date - 7 or v_ini > current_date + 730 then
+  if v_ini < current_date - 730 or v_ini > current_date + 730 then
     raise exception using errcode = '22023', message = 'intervalo:ini';
   end if;
   if v_fim < v_ini or v_fim > v_ini + 365 then

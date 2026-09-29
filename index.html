@@ -151,7 +151,7 @@ const CHK={
  tel:v=>telOK(v)||"Telefone com DDD, ex.: (77) 91234-5678",
  tel2:v=>telOK(v)||"Telefone com DDD, ex.: (77) 91234-5678",
  end:v=>v.trim().length>=5||"Digite o endereço completo",
- ini:v=>(v>=today(-7)&&v<=today(730))||"Confira a data de início",
+ ini:v=>(/^\d{4}-\d{2}-\d{2}$/.test(v)&&v>=today(-730)&&v<=today(730))||"Escolha uma data válida (até 2 anos antes ou depois de hoje)",
  fim:v=>(!S.ini||v>=S.ini)||"O término deve ser igual ou depois do início"};
 const KEY="fichaPet_v1";
 let S={},cur=0,sigOK=false;
