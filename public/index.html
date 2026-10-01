@@ -81,6 +81,22 @@ button:active{transform:scale(.98)}
  .nav.end{position:static;flex-direction:column;border-top:0}.nav.end button{width:100%}
  .saved{margin-top:18px}
 }
+/* Plan step, mobile first: sticky summary on top, day cards with price, table collapsed */
+.plw{position:sticky;top:max(8px,env(safe-area-inset-top));z-index:3}
+.pl{display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 6px 18px rgba(20,40,36,.14);border-left-color:var(--pri)}
+.pl .l{font-size:15px;line-height:1.35;min-width:0}
+.pl .v{font:700 24px/1 Fraunces,Georgia,serif;color:var(--pri);white-space:nowrap}
+.dg{display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:8px}
+.opt.dc{flex-direction:column;justify-content:center;gap:2px;min-height:62px;padding:8px 6px;border-radius:16px;text-align:center}
+.dc b{font-size:15px;font-weight:700}
+.dc small{font-size:14px;font-weight:600;color:var(--mut);font-variant-numeric:tabular-nums}
+.dc.sel small{color:#fff}
+.tdet summary{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:48px;padding:10px 16px;border:2px solid var(--line);border-radius:14px;font-weight:700;font-size:15px;cursor:pointer;list-style:none;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.tdet summary::-webkit-details-marker{display:none}
+.tdet summary:after{content:"▾";color:var(--pri);transition:.2s}
+.tdet[open] summary:after{transform:rotate(180deg)}
+.tdet .tbl{margin-top:10px;overscroll-behavior-x:contain}
+.tdet .hint{margin:8px 2px 0;color:var(--mut);font-size:13px}
 /* Step 9: plan choice (selection reuses .opt; table cells are buttons with the same "selected" look) */
 .inf h3{font:700 18px/1.25 Fraunces,Georgia,serif;margin:0 0 4px}
 .inf .vis{display:inline-block;background:var(--pri2);color:var(--pri);font-weight:700;font-size:14px;border-radius:99px;padding:3px 12px;margin:0 0 12px}
@@ -97,7 +113,7 @@ button:active{transform:scale(.98)}
 .tbl tbody tr:nth-child(even) td,.tbl tbody tr:nth-child(even) th{background:var(--pri2)}
 .tbl th:first-child{text-align:left;padding-left:14px;position:sticky;left:0;z-index:1;border-right:1px solid var(--line)}
 .tbl tbody th{background:var(--card);font-weight:700}
-.tbl .cel{background:transparent;color:var(--ink);font-weight:600;font-size:15px;min-height:42px;min-width:58px;padding:6px 4px;border-radius:10px;border:2px solid transparent;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbl .cel{background:transparent;color:var(--ink);font-weight:600;font-size:15px;min-height:44px;min-width:58px;padding:6px 4px;border-radius:10px;border:2px solid transparent;font-variant-numeric:tabular-nums;white-space:nowrap}
 @media (hover:hover){.tbl .cel:hover{border-color:var(--pri)}}
 .tbl .cel.sel{background:var(--pri);border-color:var(--pri);color:#fff}
 </style></head><body><div class="wrap">
@@ -207,25 +223,28 @@ const INFO=`<div class="f inf"><h3>🐾 PET SITTER</h3><span class="vis">2 visit
 <hr><h3>🐦🐹 PET SITTER — AVES E ROEDORES</h3><span class="vis">2 visitas por dia</span><p>Para aves e roedores:</p><ul>
 <li>Alimentação e hidratação</li><li>Limpeza básica do recinto</li><li>Administração de medicamentos prescritos</li><li>Manejo e interação conforme a espécie</li><li>Cuidados específicos previamente orientados pelo tutor</li><li>Fotos e vídeos durante as visitas</li></ul></div>`;
 function planoRes(){const a=+S.animais,d=+S.dias;
- return a&&d?`<div><span>Animais</span><b>${nA(a)}</b></div><div><span>Período</span><b>${nD(d)}</b></div><div><span>Valor</span><b>${brl(PRECO[a-1][d-1])}</b></div>`
-  :`<p style="margin:0">Escolha a quantidade de animais e de dias para ver o valor.</p>`}
+ return a&&d?`<div class="l"><b>${nA(a)}</b> · <b>${nD(d)}</b></div><div class="v">${brl(PRECO[a-1][d-1])}</div>`
+  :`<div class="l">Escolha a quantidade de animais e de dias</div>`}
 function plano(){const A=[1,2,3,4],D=[1,2,3,4,5,6,7],a=+S.animais,d=+S.dias;
  const pill=(k,v,t)=>{const on=+S[k]===v;return `<span class="opt${on?" sel":""}" role="radio" aria-checked="${on}" tabindex="0" data-k="${k}" data-v="${v}" data-m="0">${t}</span>`};
- return `<div class="f" id="f_plano"><label class="t">Quantidade de animais <b>*</b></label>
+ const card=n=>{const on=+S.dias===n;return `<span class="opt dc${on?" sel":""}" role="radio" aria-checked="${on}" tabindex="0" data-k="dias" data-v="${n}" data-m="0"><b>${nD(n)}</b><small class="pv">${a?brl(PRECO[a-1][n-1]):"—"}</small></span>`};
+ return `<div class="f plw" id="plwrap"><div class="note pl" id="plres" role="status" aria-live="polite">${planoRes()}</div></div>
+ <div class="f" id="f_plano"><label class="t">Quantidade de animais <b>*</b></label>
  <div class="opts" role="radiogroup" aria-label="Quantidade de animais">${A.map(n=>pill("animais",n,nA(n))).join("")}</div>
  <label class="t" style="margin-top:18px">Quantidade de dias <b>*</b></label>
- <div class="opts" role="radiogroup" aria-label="Quantidade de dias">${D.map(n=>pill("dias",n,nD(n))).join("")}</div>
- <div class="note sum" id="plres" role="status" aria-live="polite" style="margin-top:18px">${planoRes()}</div>
+ <div class="dg opts" role="radiogroup" aria-label="Quantidade de dias">${D.map(card).join("")}</div>
  <div class="msg">Escolha a quantidade de animais e de dias</div></div>
- <div class="f"><label class="t">Tabela de valores (toque em um valor para escolher)</label>
+ <div class="f"><details class="tdet"><summary>Ver tabela completa de valores</summary>
  <div class="tbl" role="region" aria-label="Tabela de valores, role para o lado para ver todos os dias" tabindex="0"><table><thead><tr><th scope="col">Animais / Dias</th>${D.map(n=>`<th scope="col">${nD(n)}</th>`).join("")}</tr></thead><tbody>
  ${A.map(x=>`<tr><th scope="row">${nA(x)}</th>${D.map(y=>{const on=x===a&&y===d;return `<td><button type="button" class="cel${on?" sel":""}" aria-pressed="${on}" data-a="${x}" data-d="${y}" aria-label="${nA(x)}, ${nD(y)}, ${brl(PRECO[x-1][y-1])}">${brl(PRECO[x-1][y-1])}</button></td>`}).join("")}</tr>`).join("")}
- </tbody></table></div></div>`+INFO}
+ </tbody></table></div><p class="hint">Deslize para o lado para ver todos os dias. Toque em um valor para escolher.</p></details></div>`+INFO}
 // Keeps the plan state numeric (animais, dias, valor) and the screen (pills, table, summary) in sync
 function planoSync(){const a=+S.animais||0,d=+S.dias||0;S.animais=a||undefined;S.dias=d||undefined;S.valor=a&&d?PRECO[a-1][d-1]:undefined;
  document.querySelectorAll('.opt[data-k="animais"],.opt[data-k="dias"]').forEach(z=>{const on=+S[z.dataset.k]===+z.dataset.v;z.classList.toggle("sel",on);z.setAttribute("aria-checked",on)});
  document.querySelectorAll(".cel").forEach(z=>{const on=+z.dataset.a===a&&+z.dataset.d===d;z.classList.toggle("sel",on);z.setAttribute("aria-pressed",on)});
+ document.querySelectorAll('.opt.dc').forEach(z=>{const v=z.querySelector(".pv");if(v)v.textContent=a?brl(PRECO[a-1][+z.dataset.v-1]):"—"});
  const r=$("plres");if(r)r.innerHTML=planoRes();save()}
+document.addEventListener("toggle",e=>{if(e.target.classList&&e.target.classList.contains("tdet")&&e.target.open){const c=e.target.querySelector(".cel.sel");if(c)c.scrollIntoView({inline:"center",block:"nearest"})}},true);
 const planoOK=()=>!!(S.animais&&S.dias),isTerm=()=>STEPS[cur].f.some(f=>f[2]=="term");
 const planoRows=()=>planoOK()?[["Quantidade de animais",nA(S.animais)],["Quantidade de dias",nD(S.dias)],["Valor",brl(PRECO[S.animais-1][S.dias-1])]]:[["Plano","—"]];
 function render(){
