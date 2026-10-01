@@ -28,3 +28,10 @@ Nunca coloque a chave `service_role` / secret nem a senha do banco no `index.htm
 - Anti-spam: limite de envios por IP (guardado apenas como hash), teto geral por hora, campo invisível contra robôs e tempo mínimo de preenchimento.
 - As fichas são lidas pelas veterinárias no painel do Supabase (Table Editor).
 - Se o salvamento falhar, a ficha continua sendo enviada pelo WhatsApp.
+
+### Reforços adicionais (auditoria)
+
+- `enviar_ficha` rejeita qualquer campo fora da lista permitida (sem mass assignment) e converte erros inesperados do banco em mensagem genérica.
+- Envio idempotente: a mesma assinatura nunca gera duas fichas (duplo clique, reenvio, replay).
+- O hash do IP usa um salt secreto aleatório guardado em `private.ficha_segredo` (não é possível reverter o hash por força bruta).
+- `vercel.json`: HSTS, COOP, `object-src 'none'`, `upgrade-insecure-requests`; `/supabase/*` e `README.md` redirecionam para `/` e `.vercelignore` impede que o SQL seja publicado.

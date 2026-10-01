@@ -95,6 +95,27 @@ create table if not exists public.fichas_pet (
     and char_length(coalesce(horarios,'')) <= 80 and char_length(coalesce(instrucoes,'')) <= 600)
 );
 
+-- Added later: text typed when "Outro" is chosen (adds the columns to the existing table)
+alter table public.fichas_pet add column if not exists especie_outra text
+  constraint fichas_pet_especie_outra check (char_length(especie_outra) <= 60);
+alter table public.fichas_pet add column if not exists acesso_outro text
+  constraint fichas_pet_acesso_outro check (char_length(acesso_outro) <= 120);
+
+-- Hardening: signature hash makes the same submission idempotent (double click, retry,
+-- replayed request) without touching existing rows (NULL for old rows, partial unique index).
+alter table public.fichas_pet add column if not exists sig_hash text;
+create unique index if not exists fichas_pet_sig_hash_uq on public.fichas_pet (sig_hash) where sig_hash is not null;
+
+-- Secret salt for the IP hash: a bare sha256(IP) can be reversed by brute force (only ~4 billion IPv4).
+-- The salt is random, generated once here, and never leaves the database.
+create table if not exists private.ficha_segredo (
+  id boolean primary key default true check (id),
+  salt text not null default encode(extensions.gen_random_bytes(32), 'hex')
+);
+insert into private.ficha_segredo (id) values (true) on conflict do nothing;
+alter table private.ficha_segredo enable row level security;
+revoke all on table private.ficha_segredo from public, anon, authenticated;
+
 create table if not exists private.envios_log (
   ip_hash text not null,
   created_at timestamptz not null default now()
@@ -214,9 +235,20 @@ declare
   v_doe text; v_med text; v_medos text[];
   v_ini date; v_fim date; v_data date;
   sig text;
+  sh text;
+  v_salt text;
+  -- every key the form may send; anything else is rejected (no mass assignment)
+  allowed constant text[] := array[
+    'nome','tel','tel2','end','fam','pet','esp','espq','raca','idade','sexo','cast','peso',
+    'vac','doe','doeq','med','medq','ale','autvet','ali','qtd','hor','proib',
+    'pess','anim','medo','medoq','foge','agr','hab','ini','fim','hora','serv',
+    'acesso','acessoq','inst','aut','desp','data','sig','site','_ms'];
 begin
   -- 1) envelope
   if payload is null or jsonb_typeof(payload) <> 'object' or octet_length(payload::text) > 250000 then
+    raise exception using errcode = '22023', message = 'invalido:payload';
+  end if;
+  if exists (select 1 from jsonb_object_keys(payload) as k where k <> all(allowed)) then
     raise exception using errcode = '22023', message = 'invalido:payload';
   end if;
 
@@ -235,7 +267,8 @@ begin
   -- client; x-forwarded-for can be, so it is only a fallback. The global ceiling below
   -- still caps total volume if an attacker rotates spoofed IPs.
   ip := btrim(split_part(coalesce(hdr->>'cf-connecting-ip', hdr->>'x-real-ip', hdr->>'x-forwarded-for', 'desconhecido'), ',', 1));
-  h := encode(extensions.digest(ip || '|ficha-pet', 'sha256'), 'hex');
+  select s.salt into v_salt from private.ficha_segredo s limit 1;
+  h := encode(extensions.digest(ip || '|' || coalesce(v_salt, 'ficha-pet'), 'sha256'), 'hex');
   perform pg_advisory_xact_lock(hashtext(h));
   if (select count(*) from private.envios_log where ip_hash = h and created_at > now() - interval '10 minutes') >= 3
      or (select count(*) from private.envios_log where ip_hash = h and created_at > now() - interval '1 day') >= 10
@@ -286,7 +319,18 @@ begin
     raise exception using errcode = '22023', message = 'invalido:sig';
   end;
 
-  -- 5) insert exactly one row, only allow-listed fields
+  -- idempotency / replay: the same signature image is never stored twice; a repeat
+  -- (double click, retry after a network failure, replayed request) just gets "ok"
+  sh := encode(extensions.digest(sig, 'sha256'), 'hex');
+  perform pg_advisory_xact_lock(hashtext('sig|' || sh));
+  if exists (select 1 from public.fichas_pet where sig_hash = sh) then
+    return jsonb_build_object('ok', true);
+  end if;
+
+  -- 5) insert exactly one row, only allow-listed fields.
+  -- Any unexpected database error is turned into a generic message so table/constraint
+  -- names and row contents never reach the client.
+  begin
   insert into public.fichas_pet (
     nome, tel, tel2, endereco, contato_familiar,
     pet, especie, raca, idade, sexo, castrado, peso,
@@ -295,7 +339,8 @@ begin
     sociavel_pessoas, sociavel_animais, medos, medo_outros, foge, agressivo, habitos,
     data_inicio, data_fim, horarios, servicos,
     acesso, instrucoes,
-    autoriza_decisoes, responsavel_despesas, data_termo, assinatura_png, ip_hash
+    especie_outra, acesso_outro,
+    autoriza_decisoes, responsavel_despesas, data_termo, assinatura_png, ip_hash, sig_hash
   ) values (
     private.txt(payload, 'nome', 120, true, false, 3),
     private.tel(payload, 'tel', true),
@@ -334,12 +379,22 @@ begin
                                          'Enriquecimento ambiental', 'Fotos e vídeos']),
     private.opt(payload, 'acesso', array['Chave comigo', 'Portaria', 'Alguém entrega', 'Outro'], true),
     private.txt(payload, 'inst', 600, false, true),
+    case when payload->>'esp' = 'Outro' then private.txt(payload, 'espq', 60) end,
+    case when payload->>'acesso' = 'Outro' then private.txt(payload, 'acessoq', 120) end,
     private.opt(payload, 'aut', array['Autorizo', 'Não autorizo'], true),
     true,
     v_data,
     sig,
-    h
+    h,
+    sh
   );
+  exception
+    when unique_violation then
+      return jsonb_build_object('ok', true);  -- concurrent duplicate of the same submission
+    when check_violation or not_null_violation or string_data_right_truncation
+         or invalid_text_representation or datetime_field_overflow then
+      raise exception using errcode = '22023', message = 'invalido:payload';
+  end;
   insert into private.envios_log (ip_hash) values (h);
 
   return jsonb_build_object('ok', true);
