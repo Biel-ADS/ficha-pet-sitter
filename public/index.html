@@ -80,11 +80,74 @@ button:active{transform:scale(.98)}
  .nav .p{flex:1}
  .nav.end{position:static;flex-direction:column;border-top:0}.nav.end button{width:100%}
  .saved{margin-top:18px}
+ .pr{padding:20px 16px;border-radius:20px}
+ .pr h3{font-size:19px}
 }
+/* Informative price section (final screen only) */
+.pr{background:var(--card);border-radius:22px;padding:24px;margin-top:18px;box-shadow:0 6px 24px rgba(20,40,36,.08)}
+.pr[hidden]{display:none}
+.pr h3{font:700 22px/1.25 Fraunces,Georgia,serif;margin:0 0 4px}
+.pr .vis{display:inline-block;background:var(--pri2);color:var(--pri);font-weight:700;font-size:14px;border-radius:99px;padding:3px 12px;margin:0 0 14px}
+.pr p{margin:0 0 8px;font-weight:700}
+.pr ul{margin:0;padding:0;list-style:none}
+.pr li{position:relative;padding:5px 0 5px 24px;font-size:15px}
+.pr li:before{content:"";position:absolute;left:4px;top:13px;width:8px;height:8px;border-radius:50%;background:var(--pri)}
+.pr hr{border:0;border-top:1px solid var(--line);margin:22px 0}
+.pr .tbl{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:14px;margin-top:6px}
+.pr table{border-collapse:separate;border-spacing:0;width:100%;min-width:620px;font-size:15px}
+.pr th,.pr td{padding:12px 14px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
+.pr thead th{background:var(--pri);color:#fff;font-weight:700;border-bottom:0}
+.pr tbody tr:last-child th,.pr tbody tr:last-child td{border-bottom:0}
+.pr tbody tr:nth-child(even) td,.pr tbody tr:nth-child(even) th{background:var(--pri2)}
+.pr th:first-child{text-align:left;position:sticky;left:0;z-index:1;border-right:1px solid var(--line)}
+.pr tbody th{background:var(--card);font-weight:700}
+.pr td{font-variant-numeric:tabular-nums}
 </style></head><body><div class="wrap">
 <div class="hero"><img src="logo.jpg" width="440" height="354" fetchpriority="high" decoding="async" alt="Dra. Caroline Almeida e Dra. Luísa Moraes · Médicas Veterinárias"><div class="tx"><h1>Ficha de cuidados do seu pet</h1><p>Leva cerca de 5 minutos. Quanto mais detalhes, mais tranquilo e seguro será o cuidado.</p></div></div>
 <div class="prog" id="prog"></div><div class="lbl" id="lbl"></div>
 <div class="card" id="card"></div>
+<section class="pr" id="precos" hidden aria-label="Valores dos serviços">
+<h3>🐾 PET SITTER</h3>
+<span class="vis">2 visitas por dia</span>
+<p>O serviço inclui:</p>
+<ul>
+<li>Alimentação conforme orientação do tutor</li>
+<li>Troca e reposição de água</li>
+<li>Limpeza básica do ambiente/recinto</li>
+<li>Administração de medicamentos previamente prescritos</li>
+<li>Higiene básica, quando necessária</li>
+<li>Brincadeiras e interação</li>
+<li>Passeios, quando contratados e adequados ao animal</li>
+<li>Fotos e vídeos durante as visitas</li>
+<li>Companhia e atenção individual</li>
+<li>Organização básica do espaço do animal</li>
+</ul>
+<hr>
+<h3>🐦🐹 PET SITTER — AVES E ROEDORES</h3>
+<span class="vis">2 visitas por dia</span>
+<p>Para aves e roedores:</p>
+<ul>
+<li>Alimentação e hidratação</li>
+<li>Limpeza básica do recinto</li>
+<li>Administração de medicamentos prescritos</li>
+<li>Manejo e interação conforme a espécie</li>
+<li>Cuidados específicos previamente orientados pelo tutor</li>
+<li>Fotos e vídeos durante as visitas</li>
+</ul>
+<hr>
+<h3>Tabela de preços — Aves e roedores</h3>
+<div class="tbl" role="region" aria-label="Tabela de preços, role para o lado para ver todos os dias" tabindex="0">
+<table>
+<thead><tr><th scope="col">Animais / Dias</th><th scope="col">1 dia</th><th scope="col">2 dias</th><th scope="col">3 dias</th><th scope="col">4 dias</th><th scope="col">5 dias</th><th scope="col">6 dias</th><th scope="col">7 dias</th></tr></thead>
+<tbody>
+<tr><th scope="row">1 animal</th><td>R$50</td><td>R$100</td><td>R$140</td><td>R$180</td><td>R$220</td><td>R$255</td><td>R$290</td></tr>
+<tr><th scope="row">2 animais</th><td>R$65</td><td>R$130</td><td>R$180</td><td>R$230</td><td>R$280</td><td>R$325</td><td>R$370</td></tr>
+<tr><th scope="row">3 animais</th><td>R$80</td><td>R$160</td><td>R$220</td><td>R$280</td><td>R$340</td><td>R$395</td><td>R$450</td></tr>
+<tr><th scope="row">4 animais</th><td>R$95</td><td>R$190</td><td>R$260</td><td>R$330</td><td>R$400</td><td>R$465</td><td>R$530</td></tr>
+</tbody>
+</table>
+</div>
+</section>
 <div class="foot">Suas informações são usadas apenas para o cuidado do seu pet.</div>
 <!-- bot trap: invisible to people, bots fill it; the server then discards the submission -->
 <input class="hp" data-k="site" tabindex="-1" autocomplete="off" aria-hidden="true">
@@ -180,6 +243,7 @@ function term(){return `<div class="f note"><b>Autorização de decisões imedia
 <div class="f" id="f_sig"><label class="t">Assinatura do tutor <b>*</b> <span class="opt" id="clr" style="min-height:0;padding:2px 12px;font-size:13px">limpar</span></label><canvas class="sig" id="sig" aria-label="Área para assinar com o dedo"></canvas><div class="msg">Assine acima com o dedo</div></div>`}
 function render(){
  $("prog").innerHTML=STEPS.map((_,i)=>`<i class="${i<cur?"on":i==cur?"cur":""}"></i>`).join("")+`<i class="${cur>LAST?"on":""}"></i>`;
+ $("precos").hidden=cur<=LAST; // price info only on the final screen
  if(cur>LAST)return review();
  const st=STEPS[cur];$("lbl").textContent=`Etapa ${cur+1} de ${STEPS.length}`;
  $("card").innerHTML=`<h2>${st.i} ${st.t}</h2><p class="sub">${st.s}</p><div class="grid">${st.f.map(f=>f[2]=="term"?term():fld(f)).join("")}</div>
