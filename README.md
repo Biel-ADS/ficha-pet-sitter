@@ -8,14 +8,16 @@ A ficha é salva no Supabase e depois enviada pelo WhatsApp para a veterinária.
 
 | Arquivo | O que é |
 |---|---|
-| `index.html` | O formulário inteiro (HTML, CSS e JavaScript, sem dependências) |
-| `logo.jpg` | Logo exibida no topo |
+| `public/index.html` | O formulário inteiro (HTML, CSS e JavaScript, sem dependências) |
+| `public/logo.jpg` | Logo exibida no topo |
 | `supabase/01_ficha_pet_seguranca.sql` | Tabela, validação e regras de segurança do banco |
+| `supabase/02_auditoria_verificacao.sql` | Auditoria só de leitura (RLS, grants, funções, storage). Mostra uma tabela com `ok` true/false |
+| `supabase/03_testes_seguranca.sql` | Testes simulando a chave pública (payload adulterado, honeypot, replay, rate limit). Desfaz tudo no final |
 
 ## Configuração
 
 1. No Supabase, abra **SQL Editor**, cole `supabase/01_ficha_pet_seguranca.sql` e clique em **Run**.
-2. Em `index.html`, as constantes no início do script:
+2. Em `public/index.html`, as constantes no início do script:
    - `WA`: WhatsApp da veterinária (DDI + DDD + número, só dígitos).
    - `SB_URL` e `SB_KEY`: URL do projeto e a chave **publishable** do Supabase.
 
@@ -35,3 +37,5 @@ Nunca coloque a chave `service_role` / secret nem a senha do banco no `index.htm
 - Envio idempotente: a mesma assinatura nunca gera duas fichas (duplo clique, reenvio, replay).
 - O hash do IP usa um salt secreto aleatório guardado em `private.ficha_segredo` (não é possível reverter o hash por força bruta).
 - `vercel.json`: HSTS, COOP, `object-src 'none'`, `upgrade-insecure-requests`; `/supabase/*` e `README.md` redirecionam para `/` e `.vercelignore` impede que o SQL seja publicado.
+
+- Só a pasta `public/` é publicada (`outputDirectory` no `vercel.json`): SQL, README, configs e `.env*` nunca entram no site.
