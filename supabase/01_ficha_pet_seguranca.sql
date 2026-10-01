@@ -116,6 +116,15 @@ insert into private.ficha_segredo (id) values (true) on conflict do nothing;
 alter table private.ficha_segredo enable row level security;
 revoke all on table private.ficha_segredo from public, anon, authenticated;
 
+-- Plan chosen in step 8: number of animals, days and price. Nullable so old rows stay valid.
+-- The price is NEVER taken from the client: the function computes it (private.preco_plano).
+alter table public.fichas_pet add column if not exists animais smallint
+  constraint fichas_pet_animais check (animais between 1 and 4);
+alter table public.fichas_pet add column if not exists dias smallint
+  constraint fichas_pet_dias check (dias between 1 and 7);
+alter table public.fichas_pet add column if not exists valor integer
+  constraint fichas_pet_valor check (valor > 0);
+
 create table if not exists private.envios_log (
   ip_hash text not null,
   created_at timestamptz not null default now()
@@ -215,6 +224,16 @@ begin
   end;
 end $$;
 
+-- Official price table (rows = 1..4 animals, columns = 1..7 days). Only source of truth.
+create or replace function private.preco_plano(a int, d int)
+returns int language sql immutable set search_path = '' as $$
+  select (array[
+    [50,  100, 140, 180, 220, 255, 290],
+    [65,  130, 180, 230, 280, 325, 370],
+    [80,  160, 220, 280, 340, 395, 450],
+    [95,  190, 260, 330, 400, 465, 530]])[a][d]
+$$;
+
 -- ---------------------------------------------------------------------
 -- Public entry point
 -- ---------------------------------------------------------------------
@@ -234,6 +253,7 @@ declare
   ms bigint;
   v_doe text; v_med text; v_medos text[];
   v_ini date; v_fim date; v_data date;
+  v_animais int; v_dias int; v_valor int;
   sig text;
   sh text;
   v_salt text;
@@ -242,7 +262,8 @@ declare
     'nome','tel','tel2','end','fam','pet','esp','espq','raca','idade','sexo','cast','peso',
     'vac','doe','doeq','med','medq','ale','autvet','ali','qtd','hor','proib',
     'pess','anim','medo','medoq','foge','agr','hab','ini','fim','hora','serv',
-    'acesso','acessoq','inst','aut','desp','data','sig','site','_ms'];
+    'acesso','acessoq','inst','aut','desp','data','sig','site','_ms',
+    'animais','dias','valor'];
 begin
   -- 1) envelope
   if payload is null or jsonb_typeof(payload) <> 'object' or octet_length(payload::text) > 250000 then
@@ -302,6 +323,26 @@ begin
     raise exception using errcode = '22023', message = 'obrigatorio:desp';
   end if;
 
+  -- plan: animals (1-4) and days (1-7) must be real integers; the price comes from the server table.
+  -- A "valor" sent by the browser is only compared against it, never stored or trusted.
+  -- (all three optional so a page loaded before this update still saves; the form enforces the choice)
+  if payload ? 'animais' or payload ? 'dias' or payload ? 'valor' then
+    if jsonb_typeof(payload->'animais') is distinct from 'number' or payload->>'animais' !~ '^[1-4]$' then
+      raise exception using errcode = '22023', message = 'invalido:animais';
+    end if;
+    if jsonb_typeof(payload->'dias') is distinct from 'number' or payload->>'dias' !~ '^[1-7]$' then
+      raise exception using errcode = '22023', message = 'invalido:dias';
+    end if;
+    v_animais := (payload->>'animais')::int;
+    v_dias := (payload->>'dias')::int;
+    v_valor := private.preco_plano(v_animais, v_dias);
+    if payload ? 'valor' and (jsonb_typeof(payload->'valor') is distinct from 'number'
+                              or payload->>'valor' !~ '^[0-9]{1,6}$'
+                              or (payload->>'valor')::int <> v_valor) then
+      raise exception using errcode = '22023', message = 'invalido:valor';
+    end if;
+  end if;
+
   -- signature: PNG data URL, <= 200 KB, real PNG bytes
   if jsonb_typeof(payload->'sig') is distinct from 'string' then
     raise exception using errcode = '22023', message = 'obrigatorio:sig';
@@ -340,7 +381,8 @@ begin
     data_inicio, data_fim, horarios, servicos,
     acesso, instrucoes,
     especie_outra, acesso_outro,
-    autoriza_decisoes, responsavel_despesas, data_termo, assinatura_png, ip_hash, sig_hash
+    autoriza_decisoes, responsavel_despesas, data_termo, assinatura_png, ip_hash, sig_hash,
+    animais, dias, valor
   ) values (
     private.txt(payload, 'nome', 120, true, false, 3),
     private.tel(payload, 'tel', true),
@@ -386,7 +428,8 @@ begin
     v_data,
     sig,
     h,
-    sh
+    sh,
+    v_animais, v_dias, v_valor
   );
   exception
     when unique_violation then
@@ -409,6 +452,7 @@ revoke execute on function private.opt(jsonb, text, text[], boolean) from public
 revoke execute on function private.multi(jsonb, text, text[]) from public, anon, authenticated;
 revoke execute on function private.tel(jsonb, text, boolean) from public, anon, authenticated;
 revoke execute on function private.dt(jsonb, text, boolean) from public, anon, authenticated;
+revoke execute on function private.preco_plano(int, int) from public, anon, authenticated;
 revoke execute on function public.enviar_ficha(jsonb) from public, anon, authenticated;
 grant execute on function public.enviar_ficha(jsonb) to anon;
 

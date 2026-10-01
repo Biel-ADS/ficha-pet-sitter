@@ -38,4 +38,5 @@ Nunca coloque a chave `service_role` / secret nem a senha do banco no `index.htm
 - O hash do IP usa um salt secreto aleatório guardado em `private.ficha_segredo` (não é possível reverter o hash por força bruta).
 - `vercel.json`: HSTS, COOP, `object-src 'none'`, `upgrade-insecure-requests`; `/supabase/*` e `README.md` redirecionam para `/` e `.vercelignore` impede que o SQL seja publicado.
 
+- Etapa 9 (plano): a pessoa escolhe quantidade de animais (1 a 4) e de dias (1 a 7). O navegador envia `animais`, `dias` e `valor`, mas o servidor calcula o preço em `private.preco_plano` e rejeita (`invalido:valor`) qualquer valor diferente. Grava `animais`, `dias` e `valor` em `fichas_pet`. Para mudar os preços, edite a tabela `PRECO` em `public/index.html` **e** a função `private.preco_plano` no SQL.
 - Só a pasta `public/` é publicada (`outputDirectory` no `vercel.json`): SQL, README, configs e `.env*` nunca entram no site.

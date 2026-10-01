@@ -80,74 +80,30 @@ button:active{transform:scale(.98)}
  .nav .p{flex:1}
  .nav.end{position:static;flex-direction:column;border-top:0}.nav.end button{width:100%}
  .saved{margin-top:18px}
- .pr{padding:20px 16px;border-radius:20px}
- .pr h3{font-size:19px}
 }
-/* Informative price section (final screen only) */
-.pr{background:var(--card);border-radius:22px;padding:24px;margin-top:18px;box-shadow:0 6px 24px rgba(20,40,36,.08)}
-.pr[hidden]{display:none}
-.pr h3{font:700 22px/1.25 Fraunces,Georgia,serif;margin:0 0 4px}
-.pr .vis{display:inline-block;background:var(--pri2);color:var(--pri);font-weight:700;font-size:14px;border-radius:99px;padding:3px 12px;margin:0 0 14px}
-.pr p{margin:0 0 8px;font-weight:700}
-.pr ul{margin:0;padding:0;list-style:none}
-.pr li{position:relative;padding:5px 0 5px 24px;font-size:15px}
-.pr li:before{content:"";position:absolute;left:4px;top:13px;width:8px;height:8px;border-radius:50%;background:var(--pri)}
-.pr hr{border:0;border-top:1px solid var(--line);margin:22px 0}
-.pr .tbl{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:14px;margin-top:6px}
-.pr table{border-collapse:separate;border-spacing:0;width:100%;min-width:620px;font-size:15px}
-.pr th,.pr td{padding:12px 14px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
-.pr thead th{background:var(--pri);color:#fff;font-weight:700;border-bottom:0}
-.pr tbody tr:last-child th,.pr tbody tr:last-child td{border-bottom:0}
-.pr tbody tr:nth-child(even) td,.pr tbody tr:nth-child(even) th{background:var(--pri2)}
-.pr th:first-child{text-align:left;position:sticky;left:0;z-index:1;border-right:1px solid var(--line)}
-.pr tbody th{background:var(--card);font-weight:700}
-.pr td{font-variant-numeric:tabular-nums}
+/* Step 9: plan choice (selection reuses .opt; table cells are buttons with the same "selected" look) */
+.inf h3{font:700 18px/1.25 Fraunces,Georgia,serif;margin:0 0 4px}
+.inf .vis{display:inline-block;background:var(--pri2);color:var(--pri);font-weight:700;font-size:14px;border-radius:99px;padding:3px 12px;margin:0 0 12px}
+.inf p{margin:0 0 6px;font-weight:700;font-size:15px}
+.inf ul{margin:0;padding:0;list-style:none}
+.inf li{position:relative;padding:4px 0 4px 22px;font-size:15px}
+.inf li:before{content:"";position:absolute;left:3px;top:12px;width:8px;height:8px;border-radius:50%;background:var(--pri)}
+.inf hr{border:0;border-top:1px solid var(--line);margin:20px 0}
+.tbl{overflow-x:auto;-webkit-overflow-scrolling:touch;border:2px solid var(--line);border-radius:14px}
+.tbl table{border-collapse:separate;border-spacing:0;width:100%;min-width:580px;font-size:15px}
+.tbl th,.tbl td{padding:4px 3px;text-align:center;white-space:nowrap;border-bottom:1px solid var(--line)}
+.tbl thead th{background:var(--pri);color:#fff;font-weight:700;padding:12px 4px;border-bottom:0}
+.tbl tbody tr:last-child th,.tbl tbody tr:last-child td{border-bottom:0}
+.tbl tbody tr:nth-child(even) td,.tbl tbody tr:nth-child(even) th{background:var(--pri2)}
+.tbl th:first-child{text-align:left;padding-left:14px;position:sticky;left:0;z-index:1;border-right:1px solid var(--line)}
+.tbl tbody th{background:var(--card);font-weight:700}
+.tbl .cel{background:transparent;color:var(--ink);font-weight:600;font-size:15px;min-height:42px;min-width:58px;padding:6px 4px;border-radius:10px;border:2px solid transparent;font-variant-numeric:tabular-nums;white-space:nowrap}
+@media (hover:hover){.tbl .cel:hover{border-color:var(--pri)}}
+.tbl .cel.sel{background:var(--pri);border-color:var(--pri);color:#fff}
 </style></head><body><div class="wrap">
 <div class="hero"><img src="logo.jpg" width="440" height="354" fetchpriority="high" decoding="async" alt="Dra. Caroline Almeida e Dra. Luísa Moraes · Médicas Veterinárias"><div class="tx"><h1>Ficha de cuidados do seu pet</h1><p>Leva cerca de 5 minutos. Quanto mais detalhes, mais tranquilo e seguro será o cuidado.</p></div></div>
 <div class="prog" id="prog"></div><div class="lbl" id="lbl"></div>
 <div class="card" id="card"></div>
-<section class="pr" id="precos" hidden aria-label="Valores dos serviços">
-<h3>🐾 PET SITTER</h3>
-<span class="vis">2 visitas por dia</span>
-<p>O serviço inclui:</p>
-<ul>
-<li>Alimentação conforme orientação do tutor</li>
-<li>Troca e reposição de água</li>
-<li>Limpeza básica do ambiente/recinto</li>
-<li>Administração de medicamentos previamente prescritos</li>
-<li>Higiene básica, quando necessária</li>
-<li>Brincadeiras e interação</li>
-<li>Passeios, quando contratados e adequados ao animal</li>
-<li>Fotos e vídeos durante as visitas</li>
-<li>Companhia e atenção individual</li>
-<li>Organização básica do espaço do animal</li>
-</ul>
-<hr>
-<h3>🐦🐹 PET SITTER — AVES E ROEDORES</h3>
-<span class="vis">2 visitas por dia</span>
-<p>Para aves e roedores:</p>
-<ul>
-<li>Alimentação e hidratação</li>
-<li>Limpeza básica do recinto</li>
-<li>Administração de medicamentos prescritos</li>
-<li>Manejo e interação conforme a espécie</li>
-<li>Cuidados específicos previamente orientados pelo tutor</li>
-<li>Fotos e vídeos durante as visitas</li>
-</ul>
-<hr>
-<h3>Tabela de preços — Aves e roedores</h3>
-<div class="tbl" role="region" aria-label="Tabela de preços, role para o lado para ver todos os dias" tabindex="0">
-<table>
-<thead><tr><th scope="col">Animais / Dias</th><th scope="col">1 dia</th><th scope="col">2 dias</th><th scope="col">3 dias</th><th scope="col">4 dias</th><th scope="col">5 dias</th><th scope="col">6 dias</th><th scope="col">7 dias</th></tr></thead>
-<tbody>
-<tr><th scope="row">1 animal</th><td>R$50</td><td>R$100</td><td>R$140</td><td>R$180</td><td>R$220</td><td>R$255</td><td>R$290</td></tr>
-<tr><th scope="row">2 animais</th><td>R$65</td><td>R$130</td><td>R$180</td><td>R$230</td><td>R$280</td><td>R$325</td><td>R$370</td></tr>
-<tr><th scope="row">3 animais</th><td>R$80</td><td>R$160</td><td>R$220</td><td>R$280</td><td>R$340</td><td>R$395</td><td>R$450</td></tr>
-<tr><th scope="row">4 animais</th><td>R$95</td><td>R$190</td><td>R$260</td><td>R$330</td><td>R$400</td><td>R$465</td><td>R$530</td></tr>
-</tbody>
-</table>
-</div>
-</section>
 <div class="foot">Suas informações são usadas apenas para o cuidado do seu pet.</div>
 <!-- bot trap: invisible to people, bots fill it; the server then discards the submission -->
 <input class="hp" data-k="site" tabindex="-1" autocomplete="off" aria-hidden="true">
@@ -196,7 +152,8 @@ const STEPS=[
 ["acesso","Como será o acesso ao imóvel?","opt",1,"",["Chave comigo","Portaria","Alguém entrega","Outro"]],
 ["acessoq","Qual forma de acesso?","text",0,"",0,["acesso","Outro"]],
 ["inst","Instruções sobre portões, alarmes ou chaves","area",0,"",0]]},
-{i:"✍️",t:"Termo de autorização",s:"Última etapa!",f:[["term","","term"]]}];
+{i:"✍️",t:"Termo de autorização",s:"Quase lá!",f:[["term","","term"]]},
+{i:"🐾",t:"Escolha o seu plano",s:"Selecione a quantidade de animais e o período desejado.",f:[["plano","","plano"]]}];
 const LAST=STEPS.length-1;
 // Mobile keyboard/autofill hints per field
 const AC={nome:"name",tel:"tel",tel2:"tel",end:"street-address"};
@@ -241,16 +198,45 @@ function term(){return `<div class="f note"><b>Autorização de decisões imedia
 <div class="f" id="f_desp"><label class="chk"><input type="checkbox" id="desp" ${S.desp?"checked":""}><span>Declaro que sou responsável pelas despesas veterinárias decorrentes do atendimento. <b style="color:var(--acc)">*</b></span></label><div class="msg">Necessário aceitar</div></div>
 <div class="f h"><label class="t" for="i_data">Data</label><input type="date" id="i_data" data-k="data" value="${esc(S.data||today())}"></div>
 <div class="f" id="f_sig"><label class="t">Assinatura do tutor <b>*</b> <span class="opt" id="clr" style="min-height:0;padding:2px 12px;font-size:13px">limpar</span></label><canvas class="sig" id="sig" aria-label="Área para assinar com o dedo"></canvas><div class="msg">Assine acima com o dedo</div></div>`}
+// Official prices (rows = 1..4 animals, columns = 1..7 days). The server holds the same table
+// (private.preco_plano) and never trusts the value sent from here.
+const PRECO=[[50,100,140,180,220,255,290],[65,130,180,230,280,325,370],[80,160,220,280,340,395,450],[95,190,260,330,400,465,530]];
+const nA=n=>n+(n==1?" animal":" animais"),nD=n=>n+(n==1?" dia":" dias"),brl=n=>"R$"+n;
+const INFO=`<div class="f inf"><h3>🐾 PET SITTER</h3><span class="vis">2 visitas por dia</span><p>O serviço inclui:</p><ul>
+<li>Alimentação conforme orientação do tutor</li><li>Troca e reposição de água</li><li>Limpeza básica do ambiente/recinto</li><li>Administração de medicamentos previamente prescritos</li><li>Higiene básica, quando necessária</li><li>Brincadeiras e interação</li><li>Passeios, quando contratados e adequados ao animal</li><li>Fotos e vídeos durante as visitas</li><li>Companhia e atenção individual</li><li>Organização básica do espaço do animal</li></ul>
+<hr><h3>🐦🐹 PET SITTER — AVES E ROEDORES</h3><span class="vis">2 visitas por dia</span><p>Para aves e roedores:</p><ul>
+<li>Alimentação e hidratação</li><li>Limpeza básica do recinto</li><li>Administração de medicamentos prescritos</li><li>Manejo e interação conforme a espécie</li><li>Cuidados específicos previamente orientados pelo tutor</li><li>Fotos e vídeos durante as visitas</li></ul></div>`;
+function planoRes(){const a=+S.animais,d=+S.dias;
+ return a&&d?`<div><span>Animais</span><b>${nA(a)}</b></div><div><span>Período</span><b>${nD(d)}</b></div><div><span>Valor</span><b>${brl(PRECO[a-1][d-1])}</b></div>`
+  :`<p style="margin:0">Escolha a quantidade de animais e de dias para ver o valor.</p>`}
+function plano(){const A=[1,2,3,4],D=[1,2,3,4,5,6,7],a=+S.animais,d=+S.dias;
+ const pill=(k,v,t)=>{const on=+S[k]===v;return `<span class="opt${on?" sel":""}" role="radio" aria-checked="${on}" tabindex="0" data-k="${k}" data-v="${v}" data-m="0">${t}</span>`};
+ return `<div class="f" id="f_plano"><label class="t">Quantidade de animais <b>*</b></label>
+ <div class="opts" role="radiogroup" aria-label="Quantidade de animais">${A.map(n=>pill("animais",n,nA(n))).join("")}</div>
+ <label class="t" style="margin-top:18px">Quantidade de dias <b>*</b></label>
+ <div class="opts" role="radiogroup" aria-label="Quantidade de dias">${D.map(n=>pill("dias",n,nD(n))).join("")}</div>
+ <div class="note sum" id="plres" role="status" aria-live="polite" style="margin-top:18px">${planoRes()}</div>
+ <div class="msg">Escolha a quantidade de animais e de dias</div></div>
+ <div class="f"><label class="t">Tabela de valores (toque em um valor para escolher)</label>
+ <div class="tbl" role="region" aria-label="Tabela de valores, role para o lado para ver todos os dias" tabindex="0"><table><thead><tr><th scope="col">Animais / Dias</th>${D.map(n=>`<th scope="col">${nD(n)}</th>`).join("")}</tr></thead><tbody>
+ ${A.map(x=>`<tr><th scope="row">${nA(x)}</th>${D.map(y=>{const on=x===a&&y===d;return `<td><button type="button" class="cel${on?" sel":""}" aria-pressed="${on}" data-a="${x}" data-d="${y}" aria-label="${nA(x)}, ${nD(y)}, ${brl(PRECO[x-1][y-1])}">${brl(PRECO[x-1][y-1])}</button></td>`}).join("")}</tr>`).join("")}
+ </tbody></table></div></div>`+INFO}
+// Keeps the plan state numeric (animais, dias, valor) and the screen (pills, table, summary) in sync
+function planoSync(){const a=+S.animais||0,d=+S.dias||0;S.animais=a||undefined;S.dias=d||undefined;S.valor=a&&d?PRECO[a-1][d-1]:undefined;
+ document.querySelectorAll('.opt[data-k="animais"],.opt[data-k="dias"]').forEach(z=>{const on=+S[z.dataset.k]===+z.dataset.v;z.classList.toggle("sel",on);z.setAttribute("aria-checked",on)});
+ document.querySelectorAll(".cel").forEach(z=>{const on=+z.dataset.a===a&&+z.dataset.d===d;z.classList.toggle("sel",on);z.setAttribute("aria-pressed",on)});
+ const r=$("plres");if(r)r.innerHTML=planoRes();save()}
+const planoOK=()=>!!(S.animais&&S.dias),isTerm=()=>STEPS[cur].f.some(f=>f[2]=="term");
+const planoRows=()=>planoOK()?[["Quantidade de animais",nA(S.animais)],["Quantidade de dias",nD(S.dias)],["Valor",brl(PRECO[S.animais-1][S.dias-1])]]:[["Plano","—"]];
 function render(){
  $("prog").innerHTML=STEPS.map((_,i)=>`<i class="${i<cur?"on":i==cur?"cur":""}"></i>`).join("")+`<i class="${cur>LAST?"on":""}"></i>`;
- $("precos").hidden=cur<=LAST; // price info only on the final screen
  if(cur>LAST)return review();
  const st=STEPS[cur];$("lbl").textContent=`Etapa ${cur+1} de ${STEPS.length}`;
- $("card").innerHTML=`<h2>${st.i} ${st.t}</h2><p class="sub">${st.s}</p><div class="grid">${st.f.map(f=>f[2]=="term"?term():fld(f)).join("")}</div>
+ $("card").innerHTML=`<h2>${st.i} ${st.t}</h2><p class="sub">${st.s}</p><div class="grid">${st.f.map(f=>f[2]=="term"?term():f[2]=="plano"?plano():fld(f)).join("")}</div>
  <div class="saved">Suas respostas ficam salvas neste aparelho até você enviar.</div>
  <div class="nav"><button class="g" id="bk" ${cur?"":"style='visibility:hidden'"}>← Voltar</button><button class="p" id="nx">${cur==LAST?"Revisar ficha →":"Continuar →"}</button></div>`;
  $("bk").onclick=()=>{cur--;save();render();toTop()};$("nx").onclick=next;
- if(cur==LAST)initSig();
+ if(isTerm())initSig();
 }
 function toTop(){scrollTo({top:0,behavior:"smooth"})}
 document.addEventListener("input",e=>{const k=e.target.dataset.k;if(k){S[k]=e.target.value;const p=e.target.closest(".f");if(p)p.classList.remove("bad")}
@@ -273,16 +259,21 @@ document.addEventListener("click",e=>{const o=e.target.closest(".opt");if(!o||!o
  else{S[k]=v;save();if(cond){render();return focusQ(k,v)}
   o.parentNode.querySelectorAll(".opt").forEach(z=>{z.classList.toggle("sel",z==o);z.setAttribute("aria-checked",z==o)})}
  const p=o.closest(".f");if(p)p.classList.remove("bad")});
+// Plan step: a table cell sets animals + days together; pills are handled above, then synced here
+document.addEventListener("click",e=>{const c=e.target.closest(".cel"),o=e.target.closest(".opt");
+ if(c){S.animais=+c.dataset.a;S.dias=+c.dataset.d;const p=$("f_plano");if(p)p.classList.remove("bad");planoSync()}
+ else if(o&&(o.dataset.k=="animais"||o.dataset.k=="dias"))planoSync()});
 // Show and focus the "which one?" box that appears after picking Outro/Outros
 function focusQ(k,v){const n=$("i_"+k+"q");if(n&&/^Outros?$/.test(v)){n.scrollIntoView({block:"center"});n.focus({preventScroll:true})}}
 function next(){
  let ok=true;
- (STEPS[cur].f).forEach(f=>{if(f[2]=="term")return;const el=$("f_"+f[0]);if(!el||!vis(f))return;
+ (STEPS[cur].f).forEach(f=>{if(f[2]=="term"||f[2]=="plano")return;const el=$("f_"+f[0]);if(!el||!vis(f))return;
   const v=S[f[0]],empty=!v||(Array.isArray(v)&&!v.length)||(""+v).trim()==="";
   let msg=empty&&f[3]?"Campo obrigatório":"";
   if(!empty&&CHK[f[0]]){const r=CHK[f[0]](""+v);if(r!==true)msg=r}
   el.querySelector(".msg").textContent=msg;el.classList.toggle("bad",!!msg);if(msg)ok=false});
- if(cur==LAST){[["aut",S.aut],["desp",S.desp],["sig",sigOK]].forEach(([k,v])=>{$("f_"+k).classList.toggle("bad",!v);if(!v)ok=false})}
+ if(STEPS[cur].f.some(f=>f[2]=="plano")){$("f_plano").classList.toggle("bad",!planoOK());if(!planoOK())ok=false}
+ if(isTerm()){[["aut",S.aut],["desp",S.desp],["sig",sigOK]].forEach(([k,v])=>{$("f_"+k).classList.toggle("bad",!v);if(!v)ok=false})}
  if(!ok){const b=document.querySelector(".bad");b&&b.scrollIntoView({behavior:"smooth",block:"center"});return}
  cur++;save();render();toTop()}
 let sigW=0;
@@ -301,7 +292,7 @@ function sigSmall(c){const w=500,h=Math.round(c.height*w/c.width),o=document.cre
  g.globalCompositeOperation="destination-over";g.fillStyle="#fff";g.fillRect(0,0,w,h);return o.toDataURL("image/png")}
 // Rotating the phone resizes the canvas; redraw the saved signature at the new size
 addEventListener("resize",()=>{const c=$("sig");if(c&&Math.abs(c.getBoundingClientRect().width-sigW)>1)initSig()});
-function rows(){return STEPS.map(st=>({t:st.i+" "+st.t,r:st.f.filter(f=>f[2]!="term"&&vis(f)).map(f=>[f[1],[].concat(S[f[0]]||"—").join(", ")||"—"])}))
+function rows(){return STEPS.map(st=>({t:st.i+" "+st.t,r:st.f.filter(f=>f[2]!="term"&&f[2]!="plano"&&vis(f)).map(f=>[f[1],[].concat(S[f[0]]||"—").join(", ")||"—"]).concat(st.f.some(f=>f[2]=="plano")?planoRows():[])}))
  .concat([{t:"✍️ Termo",r:[["Decisões imediatas em emergência",S.aut],["Responsável por despesas veterinárias","Sim"],["Data",S.data||today()],["Assinatura","Assinado digitalmente"]]}])}
 function text(){return "🐾 *FICHA DO PET*\n\n"+rows().map(s=>"*"+s.t+"*\n"+s.r.map(r=>"• "+r[0]+": "+r[1]).join("\n")).join("\n\n")}
 function copy(t){if(navigator.clipboard&&isSecureContext)return navigator.clipboard.writeText(t);
@@ -317,8 +308,8 @@ function review(){$("lbl").textContent="Revisão final";
 // Only visible fields, plus the term; the server re-validates everything
 function payload(){const p={};
  STEPS.forEach(st=>st.f.forEach(f=>{const v=S[f[0]];if(f[2]!="term"&&vis(f)&&v!=null&&v!=="")p[f[0]]=v}));
- return Object.assign(p,{aut:S.aut,desp:!!S.desp,data:S.data||today(),sig:S.sigsm||S.sigimg,site:S.site||"",_ms:Date.now()-S._t0})}
-const LABEL=Object.fromEntries(STEPS.flatMap(s=>s.f).map(f=>[f[0],f[1]]).concat([["aut","Autorização"],["desp","Responsável pelas despesas"],["sig","Assinatura"],["data","Data"]]));
+ return Object.assign(p,{aut:S.aut,desp:!!S.desp,data:S.data||today(),sig:S.sigsm||S.sigimg,site:S.site||"",_ms:Date.now()-S._t0,animais:S.animais,dias:S.dias,valor:S.valor})}
+const LABEL=Object.fromEntries(STEPS.flatMap(s=>s.f).map(f=>[f[0],f[1]]).concat([["aut","Autorização"],["desp","Responsável pelas despesas"],["sig","Assinatura"],["data","Data"],["animais","Quantidade de animais"],["dias","Quantidade de dias"],["valor","Valor do plano"]]));
 function goWA(){location.href="https://wa.me/"+WA+"?text="+encodeURIComponent(text())}
 async function enviar(){const b=$("wa"),st=$("st");b.disabled=true;b.textContent="Enviando…";
  let why="ok",campo="";

@@ -65,7 +65,7 @@ select * from (
   select '5 Funcoes', f.nspname || '.' || f.proname,
          'anon_exec=' || f.anon_exec || ' authenticated_exec=' || f.auth_exec || ' security_definer=' || f.prosecdef,
          case when f.nspname = 'public' and f.proname = 'enviar_ficha' then f.anon_exec and not f.auth_exec
-              when f.proname in ('txt', 'opt', 'multi', 'tel', 'dt') and f.nspname = 'private' then not f.anon_exec and not f.auth_exec
+              when f.proname in ('txt', 'opt', 'multi', 'tel', 'dt', 'preco_plano') and f.nspname = 'private' then not f.anon_exec and not f.auth_exec
               else null end
   from anon_funcs f
   where f.anon_exec or f.auth_exec or f.nspname = 'private' or f.proname = 'enviar_ficha'
@@ -111,6 +111,15 @@ select * from (
   union all
   select '11 Estrutura', 'indice unico fichas_pet_sig_hash_uq', '',
          exists (select 1 from pg_indexes where schemaname = 'public' and indexname = 'fichas_pet_sig_hash_uq')
+
+  union all
+  select '11 Estrutura', 'fichas_pet.' || cn.n || ' existe (plano da etapa 9)',
+         '', exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'fichas_pet' and column_name = cn.n)
+  from (values ('animais'), ('dias'), ('valor')) as cn(n)
+
+  union all
+  select '11 Estrutura', 'private.preco_plano existe (tabela de precos do servidor)', '',
+         exists (select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'private' and p.proname = 'preco_plano')
 
   union all
   select '11 Estrutura', 'constraint fichas_pet_desp (despesas obrigatorio)', '',
